@@ -1,0 +1,28 @@
+{
+    "name": "夏豆 #3",
+    "description": "充满夏日气息的夏豆，带来温暖与活力。BaseNFT系列的第三个角色。",
+    "image": "https://ipfs.io/ipfs/bafybeibmllqwwgmfh7rseuqngq4ah2zjmjr3cg3skbgj3p6ryroca4mhba",
+    "external_url": "https://your-website.com",
+    "attributes": [
+      {
+        "trait_type": "Character",
+        "value": "夏豆"
+      },
+      {
+        "trait_type": "Color Scheme",
+        "value": "Green"
+      },
+      {
+        "trait_type": "Rarity",
+        "value": "Legendary"
+      },
+      {
+        "trait_type": "Element", 
+        "value": "Summer"
+      },
+      {
+        "trait_type": "Series",
+        "value": "BaseNFT Collection"
+      }
+    ]
+  }

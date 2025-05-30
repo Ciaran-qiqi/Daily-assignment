@@ -1,0 +1,28 @@
+{
+    "name": "麦朵 #2", 
+    "description": "活泼可爱的麦朵，充满生命力。BaseNFT系列的第二个角色。",
+    "image": "https://ipfs.io/ipfs/bafybeifiluz2ie26w7wmgxz2exod5e2yt4dx4fg5ksfw42uezff32fdpha",
+    "external_url": "https://your-website.com",
+    "attributes": [
+      {
+        "trait_type": "Character",
+        "value": "麦朵"
+      },
+      {
+        "trait_type": "Color Scheme", 
+        "value": "Golden"
+      },
+      {
+        "trait_type": "Rarity",
+        "value": "Rare"
+      },
+      {
+        "trait_type": "Element",
+        "value": "Nature"
+      },
+      {
+        "trait_type": "Series",
+        "value": "BaseNFT Collection"
+      }
+    ]
+  }

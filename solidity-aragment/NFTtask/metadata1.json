@@ -1,0 +1,28 @@
+{
+    "name": "白月葵 #1",
+    "description": "优雅的白月葵，象征着纯洁与美丽。这是BaseNFT系列的第一个角色。",
+    "image": "https://ipfs.io/ipfs/bafybeicgmfls3ltp65ydkd3pcg7brsmnleaboumsl2tafitn74qlu65iyq",
+    "external_url": "https://your-website.com",
+    "attributes": [
+      {
+        "trait_type": "Character",
+        "value": "白月葵"
+      },
+      {
+        "trait_type": "Color Scheme",
+        "value": "White"
+      },
+      {
+        "trait_type": "Rarity",
+        "value": "Epic"
+      },
+      {
+        "trait_type": "Element",
+        "value": "Moon"
+      },
+      {
+        "trait_type": "Series",
+        "value": "BaseNFT Collection"
+      }
+    ]
+  }
