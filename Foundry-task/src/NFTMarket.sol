@@ -217,6 +217,22 @@ contract NFTMarket {
     }
 
     /**
+     * @dev 内部函数：验证EIP-712白名单签名
+     */
+    function _verifyWhitelistSignature(
+        uint256 tokenId,
+        uint256 price,
+        uint256 deadline,
+        uint8 buyV, bytes32 buyR, bytes32 buyS
+    ) internal returns (bool) {
+        uint256 nonce = nonces[msg.sender]++;
+        bytes32 structHash = keccak256(abi.encode(BUY_TYPEHASH, msg.sender, tokenId, price, nonce, deadline));
+        bytes32 digest = keccak256(abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, structHash));
+        address signer = SigUtils.recoverSigner(digest, buyV, buyR, buyS);
+        return signer == listings[tokenId].seller || signer == owner;
+    }
+
+    /**
      * @dev 通过EIP-2612 Permit + EIP-712白名单验证购买NFT
      * @param tokenId NFT编号
      * @param deadline 签名有效截止时间
@@ -230,36 +246,29 @@ contract NFTMarket {
         uint8 buyV, bytes32 buyR, bytes32 buyS
     ) external onlyListed(tokenId) {
         Listing storage listing = listings[tokenId];
-        uint256 amount = listing.price;
         require(msg.sender != listing.seller, "Self buy");
-        require(paymentToken.balanceOf(msg.sender) >= amount, "No balance");
+        require(paymentToken.balanceOf(msg.sender) >= listing.price, "No balance");
         require(nftContract.ownerOf(tokenId) == listing.seller, "NFT not owned");
         require(block.timestamp <= deadline, "Signature expired");
         
         // 1. 使用EIP-2612 permit签名授权本合约转账用户的代币
-        paymentToken.permit(msg.sender, address(this), amount, deadline, v, r, s);
+        paymentToken.permit(msg.sender, address(this), listing.price, deadline, v, r, s);
         
         // 2. 校验EIP-712离线签名（白名单授权）
-        uint256 nonce = nonces[msg.sender]++;
-        bytes32 structHash = keccak256(abi.encode(BUY_TYPEHASH, msg.sender, tokenId, amount, nonce, deadline));
-        bytes32 digest = keccak256(abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, structHash));
-        address signer = SigUtils.recoverSigner(digest, buyV, buyR, buyS);
-        require(signer == listing.seller || signer == owner, "Invalid whitelist sig");
+        require(_verifyWhitelistSignature(tokenId, listing.price, deadline, buyV, buyR, buyS), "Invalid whitelist sig");
         
-        // 3. 计算手续费
-        uint256 fee = (amount * marketplaceFee) / 10000;
-        uint256 sellerAmount = amount - fee;
+        // 3. 计算手续费和转账
+        uint256 fee = (listing.price * marketplaceFee) / 10000;
+        uint256 sellerAmount = listing.price - fee;
         
-        // 4. 代币转账：买家->卖家（无需提前approve）
         require(paymentToken.transferFrom(msg.sender, listing.seller, sellerAmount), "pay fail");
         
-        // 5. 代币转账：买家->平台
         if (fee > 0) {
             require(paymentToken.transferFrom(msg.sender, address(this), fee), "fee fail");
             accumulatedFees += fee;
         }
         
-        // 6. NFT转移
+        // 4. NFT转移
         nftContract.safeTransferFrom(listing.seller, msg.sender, tokenId);
         address seller = listing.seller;
         uint256 price = listing.price;
