@@ -1,4 +1,7 @@
 // SPDX-License-Identifier: MIT
+// wake-disable unsafe-delegatecall
+
+
 pragma solidity ^0.8.19;
 
 /**
